@@ -35,7 +35,7 @@ To get the `data` and `bss` sizes, you can run:
 The result should be something like this:
 ```
    text    data     bss     dec     hex filename
-    132       4       0     136      88 app.elf
+    144       4       0     148      94 app.elf
 ```
 
 For this result, if we chose a stack size of 512 bytes, our minimum RAM size then would be:  

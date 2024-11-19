@@ -9,9 +9,9 @@ extern void _entry(void)  __attribute__ ((naked, section(".text.init.entry"))); 
 
 extern void main(void);
 
-// System Call. Check [syscall(2)](https://man7.org/linux/man-pages/man2/syscall.2.html). Must be implemented by the host.
-SyscallReturn_t syscall(int nr, int a0, int a1, int a2, int a3, int a4, int a5) {
-    SyscallReturn_t ret;
+// System Call. Must be implemented by the host.
+SyscallResult_t syscall(int nr, int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
+    SyscallResult_t ret;
 
     register long ra0 asm("a0") = a0;
     register long ra1 asm("a1") = a1;
@@ -19,13 +19,15 @@ SyscallReturn_t syscall(int nr, int a0, int a1, int a2, int a3, int a4, int a5) 
     register long ra3 asm("a3") = a3;
     register long ra4 asm("a4") = a4;
     register long ra5 asm("a5") = a5;
+    register long ra6 asm("a6") = a6;
     register long ra7 asm("a7") = nr;
 
-    asm volatile ("scall"
-		: "+r"(ra0) : "r"(ra1), "r"(ra2), "r"(ra3), "r"(ra4), "r"(ra5), "r"(ra7));
+    asm volatile ("ecall"
+		: "+r"(ra0), "+r"(ra1)
+        : "r"(ra2), "r"(ra3), "r"(ra4), "r"(ra5), "r"(ra6), "r"(ra7));
     
-    ret.val1 = ra0;
-    ret.val2 = ra1;
+    ret.error = ra0;
+    ret.value = ra1;
 
     return ret;
 }
