@@ -1,4 +1,4 @@
-# C Template for Embive
+# C/C++ Template for Embive
 A simple program that runs inside the Embive interpreter.
 
 ## Requirements (to build)
