@@ -1,12 +1,10 @@
 #include "embive.h"
 
-extern unsigned int _bss_target_start; // Start of .bss target
-extern unsigned int _bss_target_end; // End of .bss target
-extern unsigned int _data_target_start; // Start of .data target
-extern unsigned int _data_target_end; // End of .data target
-extern unsigned int _data_source_start; // Start of .data source
-extern void _entry(void)  __attribute__ ((naked, section(".text.init.entry"))); // Entry point
-
+extern unsigned int __bss_target_start; // Start of .bss target
+extern unsigned int __bss_target_end; // End of .bss target
+extern unsigned int __data_target_start; // Start of .data target
+extern unsigned int __data_target_end; // End of .data target
+extern unsigned int __data_source_start; // Start of .data source
 extern void main(void);
 
 // System Call. Must be implemented by the host.
@@ -22,8 +20,8 @@ SyscallResult_t syscall(int nr, int a0, int a1, int a2, int a3, int a4, int a5, 
     register long ra6 asm("a6") = a6;
     register long ra7 asm("a7") = nr;
 
-    asm volatile ("ecall"
-		: "+r"(ra0), "+r"(ra1)
+    __asm__ volatile ("ecall"
+        : "+r"(ra0), "+r"(ra1)
         : "r"(ra2), "r"(ra3), "r"(ra4), "r"(ra5), "r"(ra6), "r"(ra7));
     
     ret.error = ra0;
@@ -32,23 +30,18 @@ SyscallResult_t syscall(int nr, int a0, int a1, int a2, int a3, int a4, int a5, 
     return ret;
 }
 
-// Code execution starts here. Embive initializes the stack pointer and jumps to this address.
-// This code is responsible for initializing the .bss and .data sections and calling the user's main function.
-void _entry(void)
+// This code is responsible for initializing the .bss and .data sections, and calling the user's main function.
+void _code_entry(void)
 {
     unsigned int *src, *dst;
 
     // Initialize .bss section
-    for (dst = &_bss_target_start; dst < &_bss_target_end; dst++)
-    {
+    for (dst = &__bss_target_start; dst < &__bss_target_end; dst++)
         *dst = 0;
-    }
 
     // Initialize .data section
-    for (src = &_data_source_start, dst = &_data_target_start; dst < &_data_target_end; src++, dst++)
-    {
+    for (src = &__data_source_start, dst = &__data_target_start; dst < &__data_target_end; src++, dst++)
         *dst = *src;
-    }
 
     // Call user's main function
     main();
@@ -56,6 +49,5 @@ void _entry(void)
     // Exit the interpreter
     __asm__ volatile ("ebreak");
 
-    // Should never get here
-    while (1) {}
+    __builtin_unreachable();
 }

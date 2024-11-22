@@ -16,9 +16,9 @@ set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 project(embive_c_template C CXX ASM)
 
-set ( TARGET app )
+set(TARGET app)
 
-add_executable(${TARGET}.elf src/main.c src/embive.c)
+add_executable(${TARGET}.elf src/entry.s src/embive.c src/main.c)
 
 set_target_properties(${TARGET}.elf PROPERTIES LINK_DEPENDS "${LINKER_SCRIPT}")
 target_include_directories(${TARGET}.elf PRIVATE ./include/ )
@@ -26,4 +26,3 @@ target_include_directories(${TARGET}.elf PRIVATE ./include/ )
 add_custom_command(TARGET ${TARGET}.elf POST_BUILD
         COMMAND ${CMAKE_OBJCOPY} -O binary  ${TARGET}.elf  ${TARGET}.bin
         COMMENT "Invoking: Objcopy")
-
