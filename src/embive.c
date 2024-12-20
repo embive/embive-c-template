@@ -8,6 +8,15 @@ extern unsigned int __data_source_start; // Start of .data source
 extern void main(void);
 
 // System Call. Must be implemented by the host.
+//
+/// Parameters:
+// - nr: System call number
+// - a0..a6: Arguments
+//
+// Returns:
+// - SyscallResult_t:
+//   - error: Error code (0 if successful)
+//   - value: Return value
 SyscallResult_t syscall(int nr, int a0, int a1, int a2, int a3, int a4, int a5, int a6) {
     SyscallResult_t ret;
 
@@ -47,7 +56,7 @@ void _code_entry(void)
     main();
 
     // Exit the interpreter
-    __asm__ volatile ("ebreak");
+    ebreak();
 
     __builtin_unreachable();
 }
