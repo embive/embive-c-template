@@ -8,10 +8,10 @@ set(CMAKE_CXX_COMPILER riscv32-unknown-elf-g++)
 set(CMAKE_ASM_COMPILER riscv32-unknown-elf-gcc)
 set(_CMAKE_TOOLCHAIN_PREFIX riscv32-unknown-elf-)
 
-set(CMAKE_C_FLAGS "-march=rv32imzicsr_zifencei -mabi=ilp32 -Wall -Wextra -Wno-main -Os -flto -ffunction-sections -fdata-sections")
-set(CMAKE_CXX_FLAGS "-march=rv32imzicsr_zifencei -mabi=ilp32 -Wall -Wextra -Wno-main -Os -flto -ffunction-sections -fdata-sections")
-set(CMAKE_ASM_FLAGS "-march=rv32imzicsr_zifencei -mabi=ilp32 -Wall -Wextra -Wno-main -Os -flto -ffunction-sections -fdata-sections")
-set(CMAKE_EXE_LINKER_FLAGS "-march=rv32imzicsr_zifencei -Wl,--gc-sections -nostartfiles --specs=sim.specs -T ${CMAKE_CURRENT_SOURCE_DIR}/memory.ld")
+set(CMAKE_C_FLAGS "-march=rv32imaczicsr_zifencei -mabi=ilp32 -Wall -Wextra -Wno-main -Os -flto -ffunction-sections -fdata-sections")
+set(CMAKE_CXX_FLAGS "-march=rv32imaczicsr_zifencei -mabi=ilp32 -Wall -Wextra -Wno-main -Os -flto -ffunction-sections -fdata-sections")
+set(CMAKE_ASM_FLAGS "-march=rv32imaczicsr_zifencei -mabi=ilp32 -Wall -Wextra -Wno-main -Os -flto -ffunction-sections -fdata-sections")
+set(CMAKE_EXE_LINKER_FLAGS "-march=rv32imaczicsr_zifencei -Wl,--gc-sections -nostartfiles --specs=sim.specs -T ${CMAKE_CURRENT_SOURCE_DIR}/memory.ld")
 set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 project(embive_c_template C CXX ASM)
@@ -22,7 +22,3 @@ add_executable(${TARGET}.elf src/entry.s src/embive.c src/main.c)
 
 set_target_properties(${TARGET}.elf PROPERTIES LINK_DEPENDS "${LINKER_SCRIPT}")
 target_include_directories(${TARGET}.elf PRIVATE ./include/ )
-
-add_custom_command(TARGET ${TARGET}.elf POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} -O binary  ${TARGET}.elf  ${TARGET}.bin
-        COMMENT "Invoking: Objcopy")

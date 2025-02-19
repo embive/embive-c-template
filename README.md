@@ -6,7 +6,7 @@ A simple program that runs inside the Embive interpreter.
     - Download the [RISC-V toolchain](https://github.com/riscv-collab/riscv-gnu-toolchain)
     - Install the dependencies from the README
     - Compile and install it:
-        - `$ ./configure --prefix=/opt/riscv --with-arch=rv32imzicsr_zifencei --with-abi=ilp32`
+        - `$ ./configure --prefix=/opt/riscv --with-arch=rv32imaczicsr_zifencei --with-abi=ilp32`
         - `$ make -j8`
     - Add `/opt/riscv/bin` to your PATH
 - CMake
@@ -24,10 +24,10 @@ A simple program that runs inside the Embive interpreter.
 - Create a new project
     - `$ cargo new embive-project && cd embive-project`
 - Add Embive as a dependency
-    - `$ cargo add embive --features m_extension`
+    - `$ cargo add embive`
 - Copy the example from Embive's docs/readme.
-- Swap the line `let code = ...` to `let code = include_bytes!("../app.bin");`
-- Copy the generated `app.bin` to your project
+- Swap the line `const ELF_FILE: &[u8] ...` to `const ELF_FILE: &[u8] = include_bytes!("../app.elf");`
+- Copy the generated `app.elf` (inside `build` folder) to your project
 - Run it:  
     - `$ cargo run --release`
 
@@ -46,13 +46,13 @@ You can calculate the minimum amount of RAM needed by you application with the f
 - `total_ram = data + bss`
 
 To get the `data` and `bss` sizes, you can run:  
-- `$ riscv32-unknown-elf-size app.elf`
+- `$ riscv32-unknown-elf-size build/app.elf`
     - The stack and heap will be reported as part of the bss
 
 The result should be something like this:
 ```
    text    data     bss     dec     hex filename
-    348       4    2060    2412     96c app.elf
+    308       4    2060    2372     944 app.elf
 ```
 
 For this result, our minimum RAM size would be:  
