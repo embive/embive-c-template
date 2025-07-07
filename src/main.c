@@ -1,12 +1,13 @@
 #include "embive.h"
 
 const int CONST_DATA = 20;
-static int GLOBAL_DATA = 10;
+static volatile int GLOBAL_DATA = 0;
 
 // Interrupt handler
 // This function is called when an interruption occurs
-void interrupt_handler(void) {
-    // Do something here
+void interrupt_handler(int value) {
+    // Set GLOBAL_DATA to the received value
+    GLOBAL_DATA = value;
 }
 
 // User's main function
@@ -21,14 +22,14 @@ void main(void)
     enable_interrupts();
 
     // System Call 2: Get i32 value at address
-    // The host will receive the GLOBAL_DATA address, read it from memory and return its value
-    res = syscall(2, (int) &GLOBAL_DATA, 0, 0, 0, 0, 0, 0);
+    // The host will receive the CONST_DATA address, read it from memory and return its value
+    res = syscall(2, (int) &CONST_DATA, 0, 0, 0, 0, 0, 0);
 
     // Wait for an interrupt
     wfi();
 
     if (res.error == 0) {
         // System Call 1: Add two numbers (a0 + a1)
-        res = syscall(1, res.value, CONST_DATA, 0, 0, 0, 0, 0);
+        res = syscall(1, res.value, GLOBAL_DATA, 0, 0, 0, 0, 0);
     }
 }

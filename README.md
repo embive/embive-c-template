@@ -46,13 +46,13 @@ You can calculate the minimum amount of RAM needed by you application with the f
 
 To get the `data` and `bss` sizes, you can run:  
 - `$ riscv32-unknown-elf-size build/app.elf`
-    - The stack and heap will be reported as part of the bss
+    - The stack will be reported as part of the bss
 
 The result should be something like this:
 ```
    text    data     bss     dec     hex filename
-    296       8    2056    2360     938 app.elf
+    328       0    2060    2388     954 app.elf
 ```
 
 For this result, our minimum RAM size would be:  
-- `total_ram = 8 + 2056 = 2064 bytes`
+- `total_ram = 0 + 2060 = 2060 bytes`
