@@ -31,8 +31,9 @@ SyscallResult_t syscall(int nr, int a0, int a1, int a2, int a3, int a4, int a5, 
 
     __asm__ volatile ("ecall"
         : "+r"(ra0), "+r"(ra1)
-        : "r"(ra2), "r"(ra3), "r"(ra4), "r"(ra5), "r"(ra6), "r"(ra7));
-    
+        : "r"(ra2), "r"(ra3), "r"(ra4), "r"(ra5), "r"(ra6), "r"(ra7)
+        : "memory");
+
     ret.error = ra0;
     ret.value = ra1;
 
